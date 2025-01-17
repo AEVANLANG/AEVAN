@@ -7,11 +7,26 @@
 </head>
 <body>
     <h1>Developer Dashboard</h1>
+
+    <!-- Current Path -->
+    {% if current_path %}
+    <p>Current Path: {{ current_path }}</p>
+    <a href="{{ url_for('browse', subpath='/'.join(current_path.split('/')[:-1])) }}">Go Back</a>
+    {% endif %}
+
+    <!-- List Contents -->
     <ul>
-        {% for file in files %}
-        <li><a href="{{ url_for('edit_file', filename=file) }}">{{ file }}</a></li>
+        {% for item in contents %}
+        <li>
+            {% if item.type == 'dir' %}
+            <!-- Folder -->
+            <a href="{{ url_for('browse', subpath=item.path) }}">📁 {{ item.name }}</a>
+            {% elif item.type == 'file' %}
+            <!-- File -->
+            <a href="{{ url_for('edit_file', filepath=item.path) }}">📄 {{ item.name }}</a>
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
-    <p>{{ get_flashed_messages()[0] }}</p>
 </body>
 </html>
